@@ -1,18 +1,18 @@
 // alert("connected");
-var mainUrl = 'http://api.openweathermap.org/';
+// var mainUrl = 'http://api.openweathermap.org/';
 var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
-var dataFilters = 'data/2.5/find?q=';
-var geo = 'geo/1.0/direct?q=';
+// var dataFilters = 'data/2.5/find?q=';
+// var geo = 'geo/1.0/direct?q=';
+var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
 var city = 'Sacramento';
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('today-header');
+var days = '&cnt=7'
 
-// I think this is the winner: https://openweathermap.org/api/geocoding-api
-// http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+// 
 
-// var weatherCall = mainUrl + dataFilters + city + apiKey;
-var weatherCall = mainUrl + dataFilters + city + convertFahrenheit + limit + apiKey;
+var weatherCall = mainUrl + city + convertFahrenheit + apiKey;
 
 fetch(weatherCall)
   .then(function (response) {
@@ -21,9 +21,9 @@ fetch(weatherCall)
   .then(function (data) {
     console.log(data);
    for (var i = 0; i < data.length; i++) {
-     console.log(data[i].name);
+     console.log(data.city.name);
     }
-    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.list[0].name} & Date`
+    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
   })
 
 
@@ -48,3 +48,6 @@ fetch(weatherCall)
 
 
 // Go to "How to start" section: https://openweathermap.org/api#maps
+// https://openweathermap.org/api/geocoding-api
+// http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+// var weatherCall = 'https://api.openweathermap.org/data/2.5/forecast?q=Sacramento&appid=02688e77ea6c5ab464965f3df5dd4b5d';
