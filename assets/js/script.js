@@ -1,15 +1,17 @@
 // alert("connected");
-var mainUrl = "http://api.openweathermap.org/";
-var apiKey = "02688e77ea6c5ab464965f3df5dd4b5d";
-var geoUrl = "geo/1.0/direct?q=";
-var city = "Sacramento"
+var mainUrl = 'http://api.openweathermap.org/';
+var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
+var dataFilters = 'data/2.5/find?q=';
+var geo = 'geo/1.0/direct?q=';
+var city = 'Sacramento';
+var convertFahrenheit = "&units=imperial";
+var limit = '&limit=1';
 
-// Go to "How to start" section: https://openweathermap.org/api#maps
-// and here: https://openweathermap.org/api/geocoding-api
+// I think this is the winner: https://openweathermap.org/api/geocoding-api
 // http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-// DELETE Sacramento,CA,USA&limit=1&appid=
 
-var weatherCall = mainUrl + "data/2.5/find?q=Sacramento&appid=" + apiKey;
+// var weatherCall = mainUrl + dataFilters + city + apiKey;
+var weatherCall = mainUrl + dataFilters + city + convertFahrenheit + limit + apiKey;
 
 fetch(weatherCall)
   .then(function (response) {
@@ -39,3 +41,7 @@ fetch(weatherCall)
 // THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
 // WHEN I click on a city in the search history
 // THEN I am again presented with current and future conditions for that city
+
+
+
+// Go to "How to start" section: https://openweathermap.org/api#maps
