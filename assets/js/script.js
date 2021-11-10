@@ -6,6 +6,7 @@ var geo = 'geo/1.0/direct?q=';
 var city = 'Sacramento';
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
+var todayHeader = document.getElementById('today-header');
 
 // I think this is the winner: https://openweathermap.org/api/geocoding-api
 // http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
@@ -22,7 +23,9 @@ fetch(weatherCall)
    for (var i = 0; i < data.length; i++) {
      console.log(data[i].name);
     }
+    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.list[0].name} & Date`
   })
+
 
 
 
