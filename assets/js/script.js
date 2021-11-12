@@ -9,10 +9,17 @@ var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
 var card1 = document.getElementById('card-1');
 var card2 = document.getElementById('card-2');
+var card3 = document.getElementById('card-3');
+var card4 = document.getElementById('card-4');
+var card5 = document.getElementById('card-5');
+
 var lat = 0;  
 var long = 0;
 
 var cityDateCall = "";
+
+// Set city default
+getLatLong("Sacramento");
 
 // Get lat & long, display city & date
 function getLatLong(city) {
@@ -24,31 +31,31 @@ function getLatLong(city) {
     return response.json();
   })
   .then(function (data) {
-    // console.log(data);
+    console.log(data);
     lat = data.city.coord.lat;
     long = data.city.coord.lon;
-    date = data.list[0].dt_txt;
-    date = (moment(date).format("MM/DD/YYYY"));
+    // In the afternoon, this started displaying tomorrow's date:
+    // date = data.list[0].dt_txt;
+    date = (moment(moment()).format("ddd, MM/DD/YYYY"));
     todayHeader.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.city.name} - ${date}`;
       // pass lat and long to get weather and get the rest of the data
-      getWeather(lat,long);
+      getWeather(lat,long, date);
     }).catch(err => {
       console.log(err)
       // alert("Please enter a valid city");
     }
   );
 }
-
-
 var getWeatherCall = '';
 
 // Plug in lat and long & get everything else weather related
-var getWeather = function (lat, long) {
+var getWeather = function (lat, long, date) {
   console.log(getWeatherCall)
-
+  console.log(date);
+  //console.log(moment(moment()).add(1, 'days').format("MM/DD/YYYY"));
+  
   getWeatherCall = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly,minutely' + convertFahrenheit + apiKey;
 
-  
   fetch(getWeatherCall)
     .then(function (response) {
       response.json()
@@ -57,7 +64,7 @@ var getWeather = function (lat, long) {
           console.log(data);
           nextDate = data.daily[0].dt;
           console.log(nextDate);
-          nextDate = (moment(nextDate).format("MM/DD/YYYY"));
+          // nextDate = (moment(nextDate).format("MM/DD/YYYY"));
 
           todayWeatherData.innerHTML = 
           `<li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
@@ -68,7 +75,7 @@ var getWeather = function (lat, long) {
           card1.innerHTML = 
           `<div class="card p-3">
             <ul>
-                <li class="fw-bold">Mon ${nextDate}</li>
+                <li class="fw-bold">${moment(moment()).add(1, 'days').format("ddd, MM/DD/YYYY")}</li>
                 <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png'></li>
                 <li>Temp <b>${data.daily[0].temp.day}</b></li>
                 <li>Wind <b>${data.daily[0].wind_speed}</b></li>
@@ -80,12 +87,48 @@ var getWeather = function (lat, long) {
           card2.innerHTML = 
           `<div class="card p-3">
             <ul>
-                <li class="fw-bold">Mon ${nextDate}</li>
+                <li class="fw-bold">${moment(moment()).add(2, 'days').format("ddd, MM/DD/YYYY")}</li>
                 <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[1].weather[0].icon}.png'></li>
                 <li>Temp <b>${data.daily[1].temp.day}</b></li>
                 <li>Wind <b>${data.daily[1].wind_speed}</b></li>
                 <li>Humidity <b>${data.daily[1].humidity}</b></li>
                 <li>UV Index: <b>${data.daily[1].uvi}</b></li>
+            </ul>
+          </div>`;
+
+          card3.innerHTML = 
+          `<div class="card p-3">
+            <ul>
+                <li class="fw-bold">${moment(moment()).add(3, 'days').format("ddd, MM/DD/YYYY")}</li>
+                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[2].weather[0].icon}.png'></li>
+                <li>Temp <b>${data.daily[2].temp.day}</b></li>
+                <li>Wind <b>${data.daily[2].wind_speed}</b></li>
+                <li>Humidity <b>${data.daily[2].humidity}</b></li>
+                <li>UV Index: <b>${data.daily[2].uvi}</b></li>
+            </ul>
+          </div>`;
+
+          card4.innerHTML = 
+          `<div class="card p-3">
+            <ul>
+                <li class="fw-bold">${moment(moment()).add(4, 'days').format("ddd, MM/DD/YYYY")}</li>
+                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[3].weather[0].icon}.png'></li>
+                <li>Temp <b>${data.daily[3].temp.day}</b></li>
+                <li>Wind <b>${data.daily[3].wind_speed}</b></li>
+                <li>Humidity <b>${data.daily[3].humidity}</b></li>
+                <li>UV Index: <b>${data.daily[3].uvi}</b></li>
+            </ul>
+          </div>`;
+
+          card5.innerHTML = 
+          `<div class="card p-3">
+            <ul>
+                <li class="fw-bold">${moment(moment()).add(5, 'days').format("ddd, MM/DD/YYYY")}</li>
+                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[4].weather[0].icon}.png'></li>
+                <li>Temp <b>${data.daily[4].temp.day}</b></li>
+                <li>Wind <b>${data.daily[4].wind_speed}</b></li>
+                <li>Humidity <b>${data.daily[4].humidity}</b></li>
+                <li>UV Index: <b>${data.daily[4].uvi}</b></li>
             </ul>
           </div>`;
         })
@@ -95,7 +138,7 @@ var getWeather = function (lat, long) {
 cityEl.addEventListener("click", function(event){
   console.log(event.target);
   console.log("clicked");
-
+  
   city = cityInput.value;
 
   if(city) {
