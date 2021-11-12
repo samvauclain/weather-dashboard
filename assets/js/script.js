@@ -1,6 +1,8 @@
 var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
 var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
-var city = 'Sacramento';
+var cityEl = document.getElementById("searchBtn");
+var cityInput = document.getElementById("cityInput");
+var city = "";
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
@@ -9,14 +11,6 @@ var card1 = document.getElementById('card-1');
 var card2 = document.getElementById('card-2');
 var lat = 0;  
 var long = 0;
-
-if(city) {
-  getLatLong(city);
-  // alert("city!");
-}
-else {
-  alert("please enter in a valid city");
-}
 
 var cityDateCall = "";
 
@@ -40,7 +34,7 @@ function getLatLong(city) {
       getWeather(lat,long);
     }).catch(err => {
       console.log(err)
-      alert("please enter a valid city");
+      // alert("Please enter a valid city");
     }
   );
 }
@@ -96,20 +90,32 @@ var getWeather = function (lat, long) {
           </div>`;
         })
     })
-
 }
-  
 
+cityEl.addEventListener("click", function(event){
+  console.log(event.target);
+  console.log("clicked");
 
-  // alert("lat: " + lat);
+  city = cityInput.value;
 
-  // &exclude=hourly&exclude=minutely
-// function getWeather() {
-  
-//   console.log("lat:", lat);
-//   var weatherCall2 = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=minutely,hourly' + '&appid=' + apiKey;
+  if(city) {
+    getLatLong(city);
+    // alert("city!");
+  }
+  else {
+    alert("please enter in a valid city");
+  }
+});
 
+// cityEl.addEventListener("click", cityHandler);
+
+// var cityHandler = function(event) {
+//   alert("clicked");
 // }
+  
+
+
+
 
 
 // Get the rest of it
