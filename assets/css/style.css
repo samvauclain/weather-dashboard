@@ -8,3 +8,12 @@
       *width: 19%;
     }
   }
+
+ ul {
+  list-style: none;
+  }
+
+  .weatherIcon {
+    position:relative;
+    right:0.7rem;
+  }

@@ -5,8 +5,7 @@ var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
-var days = '&cnt=7'
-
+var card1 = document.getElementById('card-1');
 var lat = 0;  
 var long = 0;
 
@@ -30,6 +29,7 @@ function getLatLong(city) {
     return response.json();
   })
   .then(function (data) {
+    // console.log(data);
     lat = data.city.coord.lat;
     long = data.city.coord.lon;
     date = data.list[0].dt_txt;
@@ -53,26 +53,41 @@ var getWeather = function (lat, long) {
 
   getWeatherCall = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly,minutely' + convertFahrenheit + apiKey;
 
+  
   fetch(getWeatherCall)
     .then(function (response) {
       response.json()
         .then(function (data) {
           console.log("weather call");
           console.log(data);
+          nextDate = data.daily[0].dt;
+          console.log(nextDate);
+          nextDate = (moment(nextDate).format("MM/DD/YYYY"));
+
           todayWeatherData.innerHTML = 
-          `<p>Tempurature: ${data.current.temp} &#8457;</p>
-          <p>Wind Speed: ${data.current.wind_speed}</p>
-          <p>Humidity: ${data.current.humidity}</p>
-          <p>UV Index: ${data.current.uvi}</p>`;
-          // <p>Tempurature</p>
-          // <p>Wind</p>
-          // <p>Humidity</p>
-          // <p>UV Index</p>
+          `<li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
+          <li>Wind Speed: <b>${data.current.wind_speed}</b></li>
+          <li>Humidity: <b>${data.current.humidity}</b></li>
+          <li>UV Index: <b>${data.current.uvi}</b></li>`;
+
+          card1.innerHTML = 
+          `<div class="card p-3">
+            <ul>
+                <li class="fw-bold">Mon ${nextDate}</li>
+                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png'></li>
+                <li>Temp <b>${data.daily[0].temp.day}</b></li>
+                <li>Wind <b>${data.daily[0].wind_speed}</b></li>
+                <li>Humidity <b>${data.daily[0].humidity}</b></li>
+                <li>UV Index: <b>${data.daily[0].uvi}</b></li>
+            </ul>
+          </div>`;
         })
     })
 
 }
   
+
+
   // alert("lat: " + lat);
 
   // &exclude=hourly&exclude=minutely
