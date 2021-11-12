@@ -6,6 +6,7 @@ var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
 var card1 = document.getElementById('card-1');
+var card2 = document.getElementById('card-2');
 var lat = 0;  
 var long = 0;
 
@@ -34,7 +35,7 @@ function getLatLong(city) {
     long = data.city.coord.lon;
     date = data.list[0].dt_txt;
     date = (moment(date).format("MM/DD/YYYY"));
-    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${date}`;
+    todayHeader.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.city.name} - ${date}`;
       // pass lat and long to get weather and get the rest of the data
       getWeather(lat,long);
     }).catch(err => {
@@ -79,6 +80,18 @@ var getWeather = function (lat, long) {
                 <li>Wind <b>${data.daily[0].wind_speed}</b></li>
                 <li>Humidity <b>${data.daily[0].humidity}</b></li>
                 <li>UV Index: <b>${data.daily[0].uvi}</b></li>
+            </ul>
+          </div>`;
+
+          card2.innerHTML = 
+          `<div class="card p-3">
+            <ul>
+                <li class="fw-bold">Mon ${nextDate}</li>
+                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[1].weather[0].icon}.png'></li>
+                <li>Temp <b>${data.daily[1].temp.day}</b></li>
+                <li>Wind <b>${data.daily[1].wind_speed}</b></li>
+                <li>Humidity <b>${data.daily[1].humidity}</b></li>
+                <li>UV Index: <b>${data.daily[1].uvi}</b></li>
             </ul>
           </div>`;
         })
