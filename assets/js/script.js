@@ -1,8 +1,4 @@
-// alert("connected");
-// var mainUrl = 'http://api.openweathermap.org/';
 var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
-// var dataFilters = 'data/2.5/find?q=';
-// var geo = 'geo/1.0/direct?q=';
 var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
 var city = 'Sacramento';
 var convertFahrenheit = "&units=imperial";
@@ -13,45 +9,56 @@ var days = '&cnt=7'
 var lat = 0;  
 var long = 0;
 
+if(city) {
+  getLatLong(city);
+  // alert("city!");
+}
+
 // Get lat & long
-var weatherCall = mainUrl + city + convertFahrenheit + apiKey;
+var latLongCall = "";
 
-function getLatLong() {
+function getLatLong(city) {
 
-     return new Promise((resolve, reject) => {
+  latLongCall = mainUrl + city + apiKey;
 
-    fetch(weatherCall)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        resolve(data);
-      for (var i = 0; i < data.length; i++) {
-        // console.log(data.city.name);
-        }
-        // todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
-        lat = data.city.coord.lat;  
-        long = data.city.coord.lon;
-      }).catch(err => {
-        reject(err);
-      })
+  fetch(latLongCall)
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+   lat = data.city.coord.lat;
+   long = data.city.coord.lon;
+    // todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
+    getWeather(lat,long);
+  })
+}
+  
+// Plug in lat and long & get everything else weather related
+var getWeatherCall = '';
+
+var getWeather = function (lat, long) {
+  console.log(getWeatherCall)
+
+  getWeatherCall = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly,minutely' + convertFahrenheit + apiKey;
+
+  fetch(getWeatherCall)
+    .then(function (response) {
+      response.json()
+        .then(function (data) {
+          console.log("weather call");
+          console.log(data);
+        })
     })
-  }
 
-getLatLong().then(data => {
-  console.log("second function:");
-  console.log(data);
-}).catch(err => {
-  console.log(err);
-});
-
+}
+  
   // alert("lat: " + lat);
 
   // &exclude=hourly&exclude=minutely
 // function getWeather() {
   
 //   console.log("lat:", lat);
-//   var weatherCall2 = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly' + '&appid=' + apiKey;
+//   var weatherCall2 = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=minutely,hourly' + '&appid=' + apiKey;
 
 // }
 
@@ -81,3 +88,15 @@ getLatLong().then(data => {
 // https://openweathermap.org/api/geocoding-api
 // http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 // var weatherCall = 'https://api.openweathermap.org/data/2.5/forecast?q=Sacramento&appid=02688e77ea6c5ab464965f3df5dd4b5d';
+
+
+// var dataFilters = 'data/2.5/find?q=';
+// var geo = 'geo/1.0/direct?q=';
+
+// alert("connected");
+// var mainUrl = 'http://api.openweathermap.org/';
+
+
+
+// https://api.openweathermap.org/data/2.5/onecall?lat=38.4666&lon=-121.3177&exclude=hourly,minutely&appid=&appid=02688e77ea6c5ab464965f3df5dd4b5d
+// https://api.openweathermap.org/data/2.5/onecall?lat=38.4666&lon=-121.3177&exclude=minutely,hourly&appid=
