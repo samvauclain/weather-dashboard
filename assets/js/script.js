@@ -3,7 +3,8 @@ var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
 var city = 'Sacramento';
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
-var todayHeader = document.getElementById('today-header');
+var todayHeader = document.getElementById('todayHeader');
+var todayWeatherData = document.getElementById('todayWeatherData');
 var days = '&cnt=7'
 
 var lat = 0;  
@@ -13,29 +14,40 @@ if(city) {
   getLatLong(city);
   // alert("city!");
 }
+else {
+  alert("please enter in a valid city");
+}
 
-// Get lat & long
-var latLongCall = "";
+var cityDateCall = "";
 
+// Get lat & long, display city & date
 function getLatLong(city) {
 
-  latLongCall = mainUrl + city + apiKey;
+  cityDateCall = mainUrl + city + apiKey;
 
-  fetch(latLongCall)
+  fetch(cityDateCall)
   .then(function (response) {
     return response.json();
   })
   .then(function (data) {
-   lat = data.city.coord.lat;
-   long = data.city.coord.lon;
-    // todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
-    getWeather(lat,long);
-  })
+    lat = data.city.coord.lat;
+    long = data.city.coord.lon;
+    date = data.list[0].dt_txt;
+    date = (moment(date).format("MM/DD/YYYY"));
+    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${date}`;
+      // pass lat and long to get weather and get the rest of the data
+      getWeather(lat,long);
+    }).catch(err => {
+      console.log(err)
+      alert("please enter a valid city");
+    }
+  );
 }
-  
-// Plug in lat and long & get everything else weather related
+
+
 var getWeatherCall = '';
 
+// Plug in lat and long & get everything else weather related
 var getWeather = function (lat, long) {
   console.log(getWeatherCall)
 
@@ -47,6 +59,15 @@ var getWeather = function (lat, long) {
         .then(function (data) {
           console.log("weather call");
           console.log(data);
+          todayWeatherData.innerHTML = 
+          `<p>Tempurature: ${data.current.temp} &#8457;</p>
+          <p>Wind Speed: ${data.current.wind_speed}</p>
+          <p>Humidity: ${data.current.humidity}</p>
+          <p>UV Index: ${data.current.uvi}</p>`;
+          // <p>Tempurature</p>
+          // <p>Wind</p>
+          // <p>Humidity</p>
+          // <p>UV Index</p>
         })
     })
 
