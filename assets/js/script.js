@@ -10,24 +10,54 @@ var limit = '&limit=1';
 var todayHeader = document.getElementById('today-header');
 var days = '&cnt=7'
 
-// 
+var lat = 0;  
+var long = 0;
 
+// Get lat & long
 var weatherCall = mainUrl + city + convertFahrenheit + apiKey;
 
-fetch(weatherCall)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(data);
-   for (var i = 0; i < data.length; i++) {
-     console.log(data.city.name);
-    }
-    todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
-  })
+function getLatLong() {
+
+     return new Promise((resolve, reject) => {
+
+    fetch(weatherCall)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        resolve(data);
+      for (var i = 0; i < data.length; i++) {
+        // console.log(data.city.name);
+        }
+        // todayHeader.innerHTML = `<i class="fas fa-plus-circle"></i> ${data.city.name} - ${data.list[0].dt_txt}`;
+        lat = data.city.coord.lat;  
+        long = data.city.coord.lon;
+      }).catch(err => {
+        reject(err);
+      })
+    })
+  }
+
+getLatLong().then(data => {
+  console.log("second function:");
+  console.log(data);
+}).catch(err => {
+  console.log(err);
+});
+
+  // alert("lat: " + lat);
+
+  // &exclude=hourly&exclude=minutely
+// function getWeather() {
+  
+//   console.log("lat:", lat);
+//   var weatherCall2 = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly' + '&appid=' + apiKey;
+
+// }
 
 
-
+// Get the rest of it
+//https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={API key}
 
 // AS A traveler
 // I WANT to see the weather outlook for multiple cities
