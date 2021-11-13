@@ -137,13 +137,14 @@ var getWeather = function (lat, long, date) {
 }
 
 function refresh() {
-  recentSearches.textContent = ""
+  recentSearches.textContent = "";
+  cityInput.value = '';
 
   for (var i = 0; i < allStorage().length; i++) {
-      var newCity = document.createElement("li")
-      newCity.innerHTML = `<button class="dropdown-item" onclick=(getLatLong("${allStorage()[i]}"))>${allStorage()[i]}</button>`
-      alert(typeof(allStorage()[i]));
-      recentSearches.appendChild(newCity)
+      var newCity = document.createElement("li");
+      newCity.innerHTML = `<button class="dropdown-item" onclick='(getLatLong("${allStorage()[i]}"))'>${allStorage()[i]}</button>`;
+      //alert(typeof(allStorage()[i]));
+      recentSearches.appendChild(newCity);
   }
 }
 
@@ -156,7 +157,8 @@ cityEl.addEventListener("click", () => {
   // else {
   //   alert("please enter in a valid city");
   // }
-  localStorage.setItem(cityInput.value, cityInput.value)
+  localStorage.setItem(cityInput.value, cityInput.value);
+  city = '';
   refresh()
 })
 
