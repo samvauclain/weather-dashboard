@@ -3,6 +3,7 @@ var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
 var cityEl = document.getElementById("searchBtn");
 var cityInput = document.getElementById("cityInput");
 var city = "";
+var recentSearches = document.getElementById('recentSearches');
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
@@ -12,7 +13,7 @@ var card2 = document.getElementById('card-2');
 var card3 = document.getElementById('card-3');
 var card4 = document.getElementById('card-4');
 var card5 = document.getElementById('card-5');
-
+var savedCities = '';
 var lat = 0;  
 var long = 0;
 
@@ -148,7 +149,18 @@ cityEl.addEventListener("click", function(event){
   else {
     alert("please enter in a valid city");
   }
+
+  localStorage.setItem("City", city);
+    
+
+    // ${localStorage.getItem('City')}
 });
+
+savedCities = localStorage.getItem('City');
+console.log(savedCities);
+recentSearches.innerHTML = `<li><a class="dropdown-item" href="#">${savedCities}</a></li>`;
+
+
 
 // cityEl.addEventListener("click", cityHandler);
 
@@ -156,10 +168,6 @@ cityEl.addEventListener("click", function(event){
 //   alert("clicked");
 // }
   
-
-
-
-
 
 // Get the rest of it
 //https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={API key}
