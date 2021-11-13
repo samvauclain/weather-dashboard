@@ -1,18 +1,16 @@
 var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
 var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
 var cityEl = document.getElementById("searchBtn");
+var clearEl = document.getElementById("clearLocalStorage");
 var cityInput = document.getElementById("cityInput");
 var city = "";
 var recentSearches = document.getElementById('recentSearches');
+recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
-var card1 = document.getElementById('card-1');
-var card2 = document.getElementById('card-2');
-var card3 = document.getElementById('card-3');
-var card4 = document.getElementById('card-4');
-var card5 = document.getElementById('card-5');
+var cards = document.getElementById('cards');
 var savedCities = '';
 var lat = 0;  
 var long = 0;
@@ -24,7 +22,7 @@ getLatLong("Sacramento");
 
 // Get lat & long, display city & date
 function getLatLong(city) {
-
+  
   cityDateCall = mainUrl + city + apiKey;
 
   fetch(cityDateCall)
@@ -35,8 +33,9 @@ function getLatLong(city) {
     console.log(data);
     lat = data.city.coord.lat;
     long = data.city.coord.lon;
-    // In the afternoon, this started displaying tomorrow's date:
+    // In the afternoon, this started displaying the next day's date for some reason:
     // date = data.list[0].dt_txt;
+    // So just grabbing date with moment js insead.
     date = (moment(moment()).format("ddd, MM/DD/YYYY"));
     todayHeader.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.city.name} - ${date}`;
       // pass lat and long to get weather and get the rest of the data
@@ -67,88 +66,50 @@ var getWeather = function (lat, long, date) {
           console.log(nextDate);
           // nextDate = (moment(nextDate).format("MM/DD/YYYY"));
 
+          cards.innerHTML = '';
+
           todayWeatherData.innerHTML = 
           `<li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
           <li>Wind Speed: <b>${data.current.wind_speed}</b></li>
           <li>Humidity: <b>${data.current.humidity}</b></li>
           <li>UV Index: <b>${data.current.uvi}</b></li>`;
 
-          card1.innerHTML = 
-          `<div class="card p-3">
-            <ul>
-                <li class="fw-bold">${moment(moment()).add(1, 'days').format("ddd, MM/DD/YYYY")}</li>
-                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png'></li>
-                <li>Temp <b>${data.daily[0].temp.day}</b></li>
-                <li>Wind <b>${data.daily[0].wind_speed}</b></li>
-                <li>Humidity <b>${data.daily[0].humidity}</b></li>
-                <li>UV Index: <b>${data.daily[0].uvi}</b></li>
-            </ul>
-          </div>`;
+          for (var i = 0; i < 5; i++) {
 
-          card2.innerHTML = 
-          `<div class="card p-3">
-            <ul>
-                <li class="fw-bold">${moment(moment()).add(2, 'days').format("ddd, MM/DD/YYYY")}</li>
-                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[1].weather[0].icon}.png'></li>
-                <li>Temp <b>${data.daily[1].temp.day}</b></li>
-                <li>Wind <b>${data.daily[1].wind_speed}</b></li>
-                <li>Humidity <b>${data.daily[1].humidity}</b></li>
-                <li>UV Index: <b>${data.daily[1].uvi}</b></li>
-            </ul>
-          </div>`;
+          // TO DO!!!!!!!!!!!!!!!!!!!!!!!!: WHEN I view the UV index
+          // THEN I am presented with a color that indicates whether the conditions are favorable, moderate, or severe
 
-          card3.innerHTML = 
-          `<div class="card p-3">
-            <ul>
-                <li class="fw-bold">${moment(moment()).add(3, 'days').format("ddd, MM/DD/YYYY")}</li>
-                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[2].weather[0].icon}.png'></li>
-                <li>Temp <b>${data.daily[2].temp.day}</b></li>
-                <li>Wind <b>${data.daily[2].wind_speed}</b></li>
-                <li>Humidity <b>${data.daily[2].humidity}</b></li>
-                <li>UV Index: <b>${data.daily[2].uvi}</b></li>
-            </ul>
-          </div>`;
-
-          card4.innerHTML = 
-          `<div class="card p-3">
-            <ul>
-                <li class="fw-bold">${moment(moment()).add(4, 'days').format("ddd, MM/DD/YYYY")}</li>
-                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[3].weather[0].icon}.png'></li>
-                <li>Temp <b>${data.daily[3].temp.day}</b></li>
-                <li>Wind <b>${data.daily[3].wind_speed}</b></li>
-                <li>Humidity <b>${data.daily[3].humidity}</b></li>
-                <li>UV Index: <b>${data.daily[3].uvi}</b></li>
-            </ul>
-          </div>`;
-
-          card5.innerHTML = 
-          `<div class="card p-3">
-            <ul>
-                <li class="fw-bold">${moment(moment()).add(5, 'days').format("ddd, MM/DD/YYYY")}</li>
-                <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[4].weather[0].icon}.png'></li>
-                <li>Temp <b>${data.daily[4].temp.day}</b></li>
-                <li>Wind <b>${data.daily[4].wind_speed}</b></li>
-                <li>Humidity <b>${data.daily[4].humidity}</b></li>
-                <li>UV Index: <b>${data.daily[4].uvi}</b></li>
-            </ul>
-          </div>`;
+            cards.innerHTML += 
+            `<div id="card-${i}" class="col-sm-6 col-lg-2 mb-3">
+            <div class="card p-3">
+              <ul>
+                  <li class="fw-bold">${moment(moment()).add(i + 1, 'days').format("ddd, MM/DD/YYYY")}</li>
+                  <li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[i].weather[0].icon}.png'></li>
+                  <li>Temp <b>${data.daily[i].temp.day}</b></li>
+                  <li>Wind <b>${data.daily[i].wind_speed}</b></li>
+                  <li>Humidity <b>${data.daily[i].humidity}</b></li>
+                  <li>UV Index: <b>${data.daily[i].uvi}</b></li>
+              </ul>
+            </div>
+            </div>`;       
+          }
         })
     })
 }
 
 function refresh() {
-  recentSearches.textContent = "";
   cityInput.value = '';
 
   for (var i = 0; i < allStorage().length; i++) {
       var newCity = document.createElement("li");
-      newCity.innerHTML = `<button class="dropdown-item" onclick='(getLatLong("${allStorage()[i]}"))'>${allStorage()[i]}</button>`;
+      newCity.innerHTML = `<li><button class="dropdown-item" onclick='(getLatLong("${allStorage()[i]}"))'>${allStorage()[i]}</button><li>`;
       //alert(typeof(allStorage()[i]));
       recentSearches.appendChild(newCity);
   }
 }
 
 cityEl.addEventListener("click", () => {
+  recentSearches.innerHTML = '';
   city = cityInput.value;
 
   if(city) {
@@ -159,11 +120,17 @@ cityEl.addEventListener("click", () => {
   // }
   localStorage.setItem(cityInput.value, cityInput.value);
   city = '';
-  refresh()
+  refresh();
+})
+
+clearEl.addEventListener("click", () => {
+  localStorage.clear();
+  recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
+  // refresh();
 })
 
 function allStorage() {
-
+  
   var values = [],
     keys = Object.keys(localStorage),
     i = keys.length;
@@ -177,42 +144,13 @@ function allStorage() {
   return values;
 }
 
-refresh()
-
-// cityEl.addEventListener("click", function(event){
-//   console.log(event.target);
-//   console.log("clicked");
-  
-//   city = cityInput.value;
-
-//   if(city) {
-//     getLatLong(city);
-//     // alert("city!");
-//   }
-//   else {
-//     alert("please enter in a valid city");
-//   }
-
-//   localStorage.setItem("City", city);
-  
-//     // ${localStorage.getItem('City')}
-// });
-
-// savedCities = localStorage.getItem('City');
-// console.log(savedCities);
-// recentSearches.innerHTML = `<li><a class="dropdown-item" href="#">${savedCities}</a></li>`;
-
-
+refresh();
 
 // cityEl.addEventListener("click", cityHandler);
 
 // var cityHandler = function(event) {
 //   alert("clicked");
 // }
-  
-
-// Get the rest of it
-//https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={API key}
 
 // AS A traveler
 // I WANT to see the weather outlook for multiple cities
@@ -229,22 +167,3 @@ refresh()
 // THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
 // WHEN I click on a city in the search history
 // THEN I am again presented with current and future conditions for that city
-
-
-
-// Go to "How to start" section: https://openweathermap.org/api#maps
-// https://openweathermap.org/api/geocoding-api
-// http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-// var weatherCall = 'https://api.openweathermap.org/data/2.5/forecast?q=Sacramento&appid=02688e77ea6c5ab464965f3df5dd4b5d';
-
-
-// var dataFilters = 'data/2.5/find?q=';
-// var geo = 'geo/1.0/direct?q=';
-
-// alert("connected");
-// var mainUrl = 'http://api.openweathermap.org/';
-
-
-
-// https://api.openweathermap.org/data/2.5/onecall?lat=38.4666&lon=-121.3177&exclude=hourly,minutely&appid=&appid=02688e77ea6c5ab464965f3df5dd4b5d
-// https://api.openweathermap.org/data/2.5/onecall?lat=38.4666&lon=-121.3177&exclude=minutely,hourly&appid=
