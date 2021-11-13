@@ -12,6 +12,7 @@ var todayWeatherData = document.getElementById('todayWeatherData');
 var cards = document.getElementById('cards');
 var lat = 0;  
 var long = 0;
+var date = '';
 
 var cityDateCall = "";
 
@@ -39,7 +40,7 @@ function getLatLong(city) {
       // pass lat and long to get weather and get the rest of the data
       getWeather(lat,long, date);
     }).catch(err => {
-      console.log(err)
+      console.log(err);
       // alert("Please enter a valid city");
     }
   );
@@ -48,7 +49,7 @@ var getWeatherCall = '';
 
 // Plug in lat and long & get everything else weather related
 var getWeather = function (lat, long, date) {
-  console.log(getWeatherCall)
+  console.log(getWeatherCall);
   console.log(date);
   //console.log(moment(moment()).add(1, 'days').format("MM/DD/YYYY"));
   
@@ -58,24 +59,17 @@ var getWeather = function (lat, long, date) {
     .then(function (response) {
       response.json()
         .then(function (data) {
-          console.log("weather call");
           console.log(data);
-          nextDate = data.daily[0].dt;
-          console.log(nextDate);
-          // nextDate = (moment(nextDate).format("MM/DD/YYYY"));
-
           cards.innerHTML = '';
 
           todayWeatherData.innerHTML = 
-          `<li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
+          `<li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png'></li>
+          <li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
           <li>Wind Speed: <b>${data.current.wind_speed}</b></li>
           <li>Humidity: <b>${data.current.humidity}</b></li>
           <li>UV Index: <b>${data.current.uvi}</b></li>`;
 
           for (var i = 0; i < 5; i++) {
-
-          // TO DO!!!!!!!!!!!!!!!!!!!!!!!!: WHEN I view the UV index
-          // THEN I am presented with a color that indicates whether the conditions are favorable, moderate, or severe
 
             cards.innerHTML += 
             `<div id="card-${i}" class="col-sm-6 col-lg-2 mb-3">
@@ -93,8 +87,8 @@ var getWeather = function (lat, long, date) {
 
             var uvEl = document.getElementById(`uv-${i}`);
             var uv = data.daily[i].uvi;
-            // console.log(uv)
 
+            // console.log(uv)
             if (uv <= 2.99) {
               uvEl.classList.add('uv-favorable');
             } 
@@ -105,9 +99,9 @@ var getWeather = function (lat, long, date) {
               uvEl.classList.add('uv-severe');
             } 
           }
-        })
-    })
-}
+        });
+    });
+};
 
 function refresh() {
   cityInput.value = '';
@@ -139,17 +133,17 @@ clearEl.addEventListener("click", () => {
   localStorage.clear();
   recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
   // refresh();
-})
+});
 
 function allStorage() {
   
     var values = [],
     keys = Object.keys(localStorage),
     i = keys.length;
-    console.log(keys)
+    console.log(keys);
 
   while (i--) {
-      console.log(values)
+      console.log(values);
       values.push(localStorage.getItem(keys[i]));
   }
 
