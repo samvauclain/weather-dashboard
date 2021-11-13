@@ -1,21 +1,15 @@
-var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
 var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
+var convertFahrenheit = "&units=imperial";
+var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
 var cityEl = document.getElementById("searchBtn");
 var clearEl = document.getElementById("clearLocalStorage");
 var cityInput = document.getElementById("cityInput");
 var city = "";
 var recentSearches = document.getElementById('recentSearches');
-
-if (!localStorage) {
 recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
-}
-
-var convertFahrenheit = "&units=imperial";
-var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
 var cards = document.getElementById('cards');
-var savedCities = '';
 var lat = 0;  
 var long = 0;
 
@@ -149,7 +143,7 @@ clearEl.addEventListener("click", () => {
 
 function allStorage() {
   
-  var values = [],
+    var values = [],
     keys = Object.keys(localStorage),
     i = keys.length;
     console.log(keys)
