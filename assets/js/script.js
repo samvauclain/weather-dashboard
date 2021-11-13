@@ -1,13 +1,17 @@
-var mainUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
-var convertFahrenheit = "&units=imperial";
-var apiKey = '&appid=02688e77ea6c5ab464965f3df5dd4b5d';
+// url related object, build different calls
+var fetchUrls = {
+  cityDateCall : 'https://api.openweathermap.org/data/2.5/forecast?q=',
+  weatherCall : 'https://api.openweathermap.org/data/2.5/onecall?lat=',
+  convertFahrenheit : "&units=imperial",
+  apiKey : '&appid=02688e77ea6c5ab464965f3df5dd4b5d'
+}
+
+var todayHeader = document.getElementById('todayHeader');
 var cityEl = document.getElementById("searchBtn");
 var clearEl = document.getElementById("clearLocalStorage");
 var cityInput = document.getElementById("cityInput");
 var city = "";
 var recentSearches = document.getElementById('recentSearches');
-recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
-var todayHeader = document.getElementById('todayHeader');
 var todayWeatherData = document.getElementById('todayWeatherData');
 var cards = document.getElementById('cards');
 var lat = 0;  
@@ -16,13 +20,19 @@ var date = '';
 
 var cityDateCall = "";
 
-// Set city default
+if(localStorage.getItem(cityInput.value) === null){ 
+  // alert("no local storage"); 
+  recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
+} else {
+  recentSearches.innerHTML = '';
+}
+
+// Set city default / starting city
 getLatLong("Sacramento");
 
 // Get lat & long, display city & date
 function getLatLong(city) {
-  
-  cityDateCall = mainUrl + city + apiKey;
+  cityDateCall = fetchUrls.cityDateCall + city + fetchUrls.apiKey;
 
   fetch(cityDateCall)
   .then(function (response) {
@@ -53,7 +63,7 @@ var getWeather = function (lat, long, date) {
   console.log(date);
   //console.log(moment(moment()).add(1, 'days').format("MM/DD/YYYY"));
   
-  getWeatherCall = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + long + '&exclude=hourly,minutely' + convertFahrenheit + apiKey;
+  getWeatherCall = fetchUrls.weatherCall + lat + '&lon=' + long + '&exclude=hourly,minutely' + fetchUrls.convertFahrenheit + fetchUrls.apiKey;
 
   fetch(getWeatherCall)
     .then(function (response) {
@@ -62,13 +72,29 @@ var getWeather = function (lat, long, date) {
           console.log(data);
           cards.innerHTML = '';
 
+          // Create the hero weather info for today's weather
           todayWeatherData.innerHTML = 
           `<li><img class="weatherIcon" src='http://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png'></li>
           <li>Tempurature: <b>${data.current.temp} &#8457;</b></li>
           <li>Wind Speed: <b>${data.current.wind_speed}</b></li>
           <li>Humidity: <b>${data.current.humidity}</b></li>
-          <li>UV Index: <b>${data.current.uvi}</b></li>`;
+          <li id="uvHeader">UV Index: <b>${data.current.uvi}</b></li>`;
 
+          var uvHeaderId = document.getElementById(`uvHeader`);
+          var uvHeader = data.current.uvi;
+
+          // checking UVs and adding styles, would be nice to make a shared function for this and the other one, pass in the argument, but need to account for for loop.
+          if (uvHeader <= 2.99) {
+            uvHeaderId.classList.add('uv-favorable');
+          } 
+          else if (uvHeader >= 3 && uvCard <= 5) {
+            uvHeaderId.classList.add('uv-moderate');
+          } 
+          else if (uvHeader > 5.01) {
+            uvHeaderId.classList.add('uv-severe');
+          } 
+
+          // Create the 5 day weather forecast cards
           for (var i = 0; i < 5; i++) {
 
             cards.innerHTML += 
@@ -86,19 +112,22 @@ var getWeather = function (lat, long, date) {
             </div>`;
 
             var uvEl = document.getElementById(`uv-${i}`);
-            var uv = data.daily[i].uvi;
+            var uvCard = data.daily[i].uvi;
 
-            // console.log(uv)
-            if (uv <= 2.99) {
+            // checking UVs and adding styles, would be nice to make a shared function for this and the other one, pass in the argument, but need to account for for loop.
+            if (uvCard <= 2.99) {
               uvEl.classList.add('uv-favorable');
             } 
-            else if (uv >= 3 && uv <= 5) {
+            else if (uvCard >= 3 && uvCard <= 5) {
               uvEl.classList.add('uv-moderate');
             } 
-            else if (uv > 5.01) {
+            else if (uvCard > 5.01) {
               uvEl.classList.add('uv-severe');
             } 
           }
+        }).catch((error) => {
+          console.error('Error:', error);
+          return;
         });
     });
 };
@@ -121,9 +150,9 @@ cityEl.addEventListener("click", () => {
   if(city) {
     getLatLong(city);
   }
-  // else {
-  //   alert("please enter in a valid city");
-  // }
+  else {
+    alert("please enter in a valid city");
+  }
   localStorage.setItem(cityInput.value, cityInput.value);
   city = '';
   refresh();
@@ -151,12 +180,6 @@ function allStorage() {
 }
 
 refresh();
-
-// cityEl.addEventListener("click", cityHandler);
-
-// var cityHandler = function(event) {
-//   alert("clicked");
-// }
 
 // AS A traveler
 // I WANT to see the weather outlook for multiple cities
