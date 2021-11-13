@@ -136,29 +136,69 @@ var getWeather = function (lat, long, date) {
     })
 }
 
-cityEl.addEventListener("click", function(event){
-  console.log(event.target);
-  console.log("clicked");
-  
+function refresh() {
+  recentSearches.textContent = ""
+
+  for (var i = 0; i < allStorage().length; i++) {
+      var newCity = document.createElement("li")
+      newCity.innerHTML = `<button class="dropdown-item" onclick=(getLatLong("${allStorage()[i]}"))>${allStorage()[i]}</button>`
+      alert(typeof(allStorage()[i]));
+      recentSearches.appendChild(newCity)
+  }
+}
+
+cityEl.addEventListener("click", () => {
   city = cityInput.value;
 
   if(city) {
     getLatLong(city);
-    // alert("city!");
   }
-  else {
-    alert("please enter in a valid city");
+  // else {
+  //   alert("please enter in a valid city");
+  // }
+  localStorage.setItem(cityInput.value, cityInput.value)
+  refresh()
+})
+
+function allStorage() {
+
+  var values = [],
+    keys = Object.keys(localStorage),
+    i = keys.length;
+    console.log(keys)
+
+  while (i--) {
+      console.log(values)
+      values.push(localStorage.getItem(keys[i]));
   }
 
-  localStorage.setItem("City", city);
-    
+  return values;
+}
 
-    // ${localStorage.getItem('City')}
-});
+refresh()
 
-savedCities = localStorage.getItem('City');
-console.log(savedCities);
-recentSearches.innerHTML = `<li><a class="dropdown-item" href="#">${savedCities}</a></li>`;
+// cityEl.addEventListener("click", function(event){
+//   console.log(event.target);
+//   console.log("clicked");
+  
+//   city = cityInput.value;
+
+//   if(city) {
+//     getLatLong(city);
+//     // alert("city!");
+//   }
+//   else {
+//     alert("please enter in a valid city");
+//   }
+
+//   localStorage.setItem("City", city);
+  
+//     // ${localStorage.getItem('City')}
+// });
+
+// savedCities = localStorage.getItem('City');
+// console.log(savedCities);
+// recentSearches.innerHTML = `<li><a class="dropdown-item" href="#">${savedCities}</a></li>`;
 
 
 
