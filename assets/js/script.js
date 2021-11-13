@@ -5,7 +5,11 @@ var clearEl = document.getElementById("clearLocalStorage");
 var cityInput = document.getElementById("cityInput");
 var city = "";
 var recentSearches = document.getElementById('recentSearches');
+
+if (!localStorage) {
 recentSearches.innerHTML = `<li class="dropdown-item">No recent searches found<li>`;
+}
+
 var convertFahrenheit = "&units=imperial";
 var limit = '&limit=1';
 var todayHeader = document.getElementById('todayHeader');
@@ -88,10 +92,24 @@ var getWeather = function (lat, long, date) {
                   <li>Temp <b>${data.daily[i].temp.day}</b></li>
                   <li>Wind <b>${data.daily[i].wind_speed}</b></li>
                   <li>Humidity <b>${data.daily[i].humidity}</b></li>
-                  <li>UV Index: <b>${data.daily[i].uvi}</b></li>
+                  <li id="uv-${i}">UV Index: <b>${data.daily[i].uvi}</b></li>
               </ul>
             </div>
-            </div>`;       
+            </div>`;
+
+            var uvEl = document.getElementById(`uv-${i}`);
+            var uv = data.daily[i].uvi;
+            // console.log(uv)
+
+            if (uv <= 2.99) {
+              uvEl.classList.add('uv-favorable');
+            } 
+            else if (uv >= 3 && uv <= 5) {
+              uvEl.classList.add('uv-moderate');
+            } 
+            else if (uv > 5.01) {
+              uvEl.classList.add('uv-severe');
+            } 
           }
         })
     })

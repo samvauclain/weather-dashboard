@@ -17,3 +17,15 @@
     position:relative;
     right:0.7rem;
   }
+
+  .uv-favorable {
+    color:green;
+  }
+
+  .uv-moderate {
+    color:rgb(175, 175, 6);
+  }
+
+  .uv-severe {
+    color:rgb(170, 8, 8);
+  }
