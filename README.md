@@ -1,5 +1,7 @@
 # Weather Dashboard
 
+Published page is here: https://samvauclain.github.io/weather-dashboard/
+
 I WANT to see the weather outlook for multiple cities\
 SO THAT I can plan a trip accordingly
 
