@@ -36,8 +36,8 @@ function getLatLong(city) {
 
   fetch(cityDateCall)
   .then(function (response) {
-    return response.json();
-  })
+  if (response.ok) {
+    response.json() 
   .then(function (data) {
     console.log(data);
     lat = data.city.coord.lat;
@@ -49,6 +49,11 @@ function getLatLong(city) {
     todayHeader.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.city.name} - ${date}`;
       // pass lat and long to get weather and get the rest of the data
       getWeather(lat,long, date);
+    })
+  }
+  else if (!response.ok) {
+    alert("Please check your spelling and try entering a city name again.");
+  }
     }).catch(err => {
       console.log(err);
       // alert("Please enter a valid city");
